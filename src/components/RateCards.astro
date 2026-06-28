@@ -1,0 +1,18 @@
+---
+import { RATES } from "../lib/site";
+interface Props { dark?: boolean; }
+const { dark = false } = Astro.props;
+---
+<div class="grid grid-cols-1 md:grid-cols-3 gap-px bg-border border border-border">
+  {RATES.map((rate) => (
+    <div class:list={["p-8 flex flex-col reveal", dark ? "bg-dark text-on-dark" : "bg-surface"]}>
+      <span class:list={["kicker mb-6", dark ? "text-primary" : "text-primary"]}>{rate.label}</span>
+      <div class="flex items-baseline gap-2 mb-4">
+        <span class="spec-numeral text-5xl md:text-6xl">{rate.price}</span>
+        <span class:list={["kicker", dark ? "text-on-dark/60" : "text-muted"]}>{rate.unit}</span>
+      </div>
+      <p class:list={["text-sm mb-8 grow", dark ? "text-on-dark/70" : "text-muted"]}>{rate.note}</p>
+      <a href="/book" class:list={[dark ? "btn-ghost !border-on-dark !text-on-dark hover:!bg-on-dark hover:!text-dark" : "btn-ghost", "w-full"]}>Check a date</a>
+    </div>
+  ))}
+</div>

@@ -1,0 +1,193 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import WindowWall from "../components/WindowWall.astro";
+import SunPath from "../components/SunPath.astro";
+import RateCards from "../components/RateCards.astro";
+import { getGear, getReferences } from "../lib/cms";
+import { SITE } from "../lib/site";
+
+const [gear, references] = await Promise.all([getGear(), getReferences()]);
+const included = gear.filter((g) => g.included && g.category !== "Studio").slice(0, 4);
+
+const jsonld = [
+  {
+    "@context": "https://schema.org",
+    "@type": "PhotographyBusiness",
+    name: SITE.name,
+    description: SITE.tagline,
+    url: SITE.url,
+    email: SITE.email,
+    foundingDate: String(SITE.est),
+    priceRange: "€€",
+    address: {
+      "@type": "PostalAddress",
+      streetAddress: "Tram Depot District",
+      addressLocality: "Prague 7",
+      addressCountry: "CZ",
+    },
+    geo: { "@type": "GeoCoordinates", latitude: SITE.geo.lat, longitude: SITE.geo.lng },
+    openingHours: "Mo-Su 08:00-20:00",
+  },
+];
+---
+<BaseLayout jsonld={jsonld}>
+  <!-- 1. Hero -->
+  <header class="relative min-h-[88vh] md:min-h-[92vh] flex items-end -mt-20 pt-20">
+    <WindowWall variant="north" cols={7} rows={6} class="absolute inset-0" label="Studio North's six-meter window wall in raking morning light across an empty concrete floor" />
+    <div class="absolute inset-x-0 bottom-0 h-2/3 bg-gradient-to-t from-background via-background/40 to-transparent"></div>
+    <div class="relative mx-auto max-w-[1440px] w-full px-5 md:px-16 pb-16 md:pb-24 grid grid-cols-1 md:grid-cols-12 gap-6">
+      <div class="md:col-span-9 lg:col-span-8">
+        <span class="kicker text-primary block mb-5">Daylight studios · Prague 7</span>
+        <h1 class="font-display font-black uppercase tracking-tight leading-[0.92] text-[2.5rem] sm:text-6xl lg:text-[5rem]">
+          Six-meter windows,<br />north-facing.<br />
+          <span class="text-muted">The light does most of the work.</span>
+        </h1>
+        <div class="mt-8 flex flex-wrap gap-4">
+          <a href="/book" class="btn-primary">Check a date</a>
+          <a href="/rates" class="btn-ghost">See the gear list</a>
+        </div>
+      </div>
+      <div class="hidden md:flex md:col-span-3 lg:col-span-4 justify-end items-stretch">
+        <div class="light-line opacity-60"></div>
+      </div>
+    </div>
+  </header>
+
+  <!-- 2. Two studios at a glance -->
+  <section class="mx-auto max-w-[1440px] px-5 md:px-16 py-section" aria-labelledby="studios-h">
+    <div class="mb-12 reveal">
+      <span class="kicker text-primary block mb-4">The spaces</span>
+      <h2 id="studios-h" class="font-display font-bold uppercase text-3xl md:text-5xl tracking-tight">Two rooms</h2>
+      <p class="text-muted text-lg mt-4 max-w-xl">One for soft portraits, one a car can drive into. Both face north.</p>
+    </div>
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-10">
+      {[
+        { href: "/studio-north", n: "01", variant: "north", name: "Studio North", note: "95 m² of uninterrupted daylight. 4.2 m ceiling, a six-meter wall of glass, full grip kit by the door." },
+        { href: "/studio-depot", n: "02", variant: "depot", name: "Studio Depot", note: "78 m² drive-in dock. Freight lift, a floor rated for a small car, dock-side north glass." },
+      ].map((s) => (
+        <a href={s.href} class="group block reveal">
+          <div class="relative aspect-[4/3] border border-border overflow-hidden">
+            <WindowWall variant={s.variant as "north" | "depot"} class="absolute inset-0 transition-transform duration-700 group-hover:scale-[1.03]" label={`${s.name} interior`} />
+            <span class="absolute top-5 left-5 bg-surface border border-border kicker px-3 py-2">{s.name}</span>
+          </div>
+          <div class="flex justify-between items-end border-b border-border pt-5 pb-4">
+            <div>
+              <h3 class="font-display font-bold uppercase text-xl md:text-2xl">{s.name}</h3>
+              <p class="text-muted max-w-sm mt-2">{s.note}</p>
+            </div>
+            <span class="spec-numeral text-4xl text-border">{s.n}</span>
+          </div>
+        </a>
+      ))}
+    </div>
+  </section>
+
+  <!-- 3. Sun-path strip -->
+  <section class="bg-surface border-y border-border" aria-labelledby="sun-h">
+    <div class="mx-auto max-w-[1440px] px-5 md:px-16 py-section">
+      <div class="grid grid-cols-1 md:grid-cols-12 gap-10 items-start mb-12">
+        <div class="md:col-span-6 reveal">
+          <span class="kicker text-primary block mb-4">Solar analysis</span>
+          <h2 id="sun-h" class="font-display font-bold uppercase text-3xl md:text-5xl tracking-tight">Chase the path</h2>
+          <p class="text-muted text-lg mt-4 max-w-md">Here is exactly where the light falls at 9am, noon, and 4pm. Oriented just east of north, the room holds clean, color-accurate light from sunrise past four.</p>
+        </div>
+        <div class="md:col-span-6 md:text-right reveal">
+          <span class="spec-numeral text-6xl md:text-7xl block">12.5h</span>
+          <span class="kicker text-muted">Avg. daylight window</span>
+        </div>
+      </div>
+      <div class="reveal"><SunPath /></div>
+    </div>
+  </section>
+
+  <!-- 4. What's in the room -->
+  <section class="mx-auto max-w-[1440px] px-5 md:px-16 py-section" aria-labelledby="room-h">
+    <div class="grid grid-cols-1 md:grid-cols-12 gap-10">
+      <div class="md:col-span-4 reveal">
+        <span class="kicker text-primary block mb-4">In the room</span>
+        <h2 id="room-h" class="font-display font-bold uppercase text-3xl md:text-4xl tracking-tight">Bring your camera</h2>
+        <p class="text-muted text-lg mt-4">C-stands, flags, and a roll of seamless are already here. The grip kit comes with every booking.</p>
+        <a href="/rates" class="btn-ghost mt-8">See the full gear list</a>
+      </div>
+      <ul class="md:col-span-8 grid grid-cols-1 sm:grid-cols-2 gap-px bg-border border border-border self-start">
+        {included.map((g) => (
+          <li class="bg-surface p-6 reveal">
+            <div class="flex items-center justify-between gap-3 mb-2">
+              <span class="font-display font-bold uppercase text-sm tracking-wide">{g.name}</span>
+              <span class="kicker text-primary">Included</span>
+            </div>
+            <p class="text-sm text-muted">{g.specNote}</p>
+          </li>
+        ))}
+      </ul>
+    </div>
+  </section>
+
+  <!-- 5. Rate card preview -->
+  <section class="bg-dark text-on-dark" aria-labelledby="rates-h">
+    <div class="mx-auto max-w-[1440px] px-5 md:px-16 py-section">
+      <div class="flex flex-col md:flex-row md:items-end md:justify-between gap-6 mb-12 reveal">
+        <div>
+          <span class="kicker text-primary block mb-4">Transparent pricing</span>
+          <h2 id="rates-h" class="font-display font-bold uppercase text-3xl md:text-5xl tracking-tight">Hourly or full day</h2>
+          <p class="text-on-dark/70 text-lg mt-4 max-w-md">The price is on the page, not behind a form. No deposit to ask.</p>
+        </div>
+        <a href="/rates" class="btn-ghost !border-on-dark !text-on-dark hover:!bg-on-dark hover:!text-dark shrink-0">Full rates & gear</a>
+      </div>
+      <RateCards dark />
+    </div>
+  </section>
+
+  <!-- 6. Who shoots here -->
+  {references.length > 0 && (
+    <section class="mx-auto max-w-[1440px] px-5 md:px-16 py-section" aria-labelledby="refs-h">
+      <span class="kicker text-primary block mb-12 reveal">Who shoots here</span>
+      <h2 id="refs-h" class="sr-only">Testimonials</h2>
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-10">
+        {references.map((r) => (
+          <figure class="flex flex-col reveal">
+            <div class="light-line h-10 w-px mb-6"></div>
+            <blockquote class="font-display font-bold uppercase text-lg leading-snug tracking-tight grow">“{r.quote}”</blockquote>
+            <figcaption class="mt-6 pt-5 border-t border-border">
+              <span class="block font-display font-bold uppercase text-sm tracking-wide">{r.name}</span>
+              <span class="block text-sm text-muted mt-1">{r.detail}</span>
+            </figcaption>
+          </figure>
+        ))}
+      </div>
+    </section>
+  )}
+
+  <!-- 7. Booking CTA band -->
+  <section class="bg-surface border-y border-border" aria-labelledby="cta-h">
+    <div class="mx-auto max-w-[1440px] px-5 md:px-16 py-20 md:py-28 text-center">
+      <div class="light-line h-12 w-px mx-auto mb-8 reveal"></div>
+      <h2 id="cta-h" class="font-display font-bold uppercase text-3xl md:text-5xl tracking-tight reveal">Tell us the date and the studio</h2>
+      <p class="text-muted text-lg mt-5 max-w-lg mx-auto reveal">We reply the same day to confirm the slot and send a door code. No deposit up front.</p>
+      <a href="/book" class="btn-primary mt-8 reveal">Check a date</a>
+    </div>
+  </section>
+
+  <!-- 8. Access and dock notes -->
+  <section class="mx-auto max-w-[1440px] px-5 md:px-16 py-section grid grid-cols-1 md:grid-cols-12 gap-10" aria-labelledby="access-h">
+    <div class="md:col-span-5 reveal">
+      <span class="kicker text-primary block mb-4">Access & dock</span>
+      <h2 id="access-h" class="font-display font-bold uppercase text-3xl md:text-4xl tracking-tight">A car can drive in</h2>
+      <p class="text-muted text-lg mt-4">The loading dock fits a small car and a freight lift handles the rest. A small lot holds two cars; heavy carts ride the lift off the dock.</p>
+      <a href="/contact" class="btn-ghost mt-8">Loading-dock access notes</a>
+    </div>
+    <dl class="md:col-span-7 grid grid-cols-2 gap-px bg-border border border-border self-start">
+      {[
+        ["Dock door", "4.2 × 4.5 m"],
+        ["Floor load", "1500 kg / m²"],
+        ["Freight lift", "3000 kg"],
+        ["Power", "3× 64A CEE"],
+      ].map(([k, v]) => (
+        <div class="bg-surface p-6">
+          <dt class="kicker text-muted mb-3">{k}</dt>
+          <dd class="spec-numeral text-2xl md:text-3xl">{v}</dd>
+        </div>
+      ))}
+    </dl>
+  </section>
+</BaseLayout>

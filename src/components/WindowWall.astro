@@ -1,0 +1,86 @@
+---
+/* A CSS/SVG depiction of the depot's north-facing mullioned window wall with
+   raking daylight across a concrete floor — the site's recurring visual.
+   Pure CSS keeps it instant-painting (LCP) and on-brand (no off-palette stock).
+   Variants tune the mood per studio. */
+interface Props {
+  variant?: "north" | "depot" | "detail";
+  class?: string;
+  cols?: number;
+  rows?: number;
+  label?: string;
+}
+const { variant = "north", class: className = "", cols = 6, rows = 5, label } = Astro.props;
+const uid = "ww-" + Math.random().toString(36).slice(2, 8);
+const lines = (n: number) => Array.from({ length: n - 1 }, (_, i) => (i + 1) / n);
+---
+<div class:list={["window-wall", `ww-${variant}`, className]} data-uid={uid} role="img" aria-label={label ?? "Studio window wall in raking north daylight"}>
+  <div class="ww-glow"></div>
+  <svg class="ww-mullions" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true">
+    {lines(cols).map((x) => <line x1={x * 100} y1="0" x2={x * 100} y2="78" />)}
+    {lines(rows).map((y) => <line x1="0" y1={y * 78} x2="100" y2={y * 78} />)}
+    <line x1="0" y1="78" x2="100" y2="78" class="ww-floorline" />
+  </svg>
+  <div class="ww-floor"></div>
+  <div class="ww-sweep"></div>
+  <slot />
+</div>
+
+<style>
+  .window-wall {
+    /* position comes from the consumer (always `absolute inset-0` inside a
+       sized relative parent); don't set it here or it overrides that utility. */
+    overflow: hidden;
+    background: var(--color-surface);
+    isolation: isolate;
+  }
+  .ww-glow {
+    position: absolute;
+    inset: 0 0 22% 0;
+    background:
+      radial-gradient(120% 90% at 70% 0%, #ffffff 0%, #eef2f1 45%, #dfe6e3 100%);
+  }
+  .ww-north .ww-glow {
+    background: radial-gradient(120% 95% at 65% -5%, #ffffff 0%, #eef3f2 50%, #d9e2df 100%);
+  }
+  .ww-depot .ww-glow {
+    background:
+      linear-gradient(180deg, rgba(0,0,0,0) 55%, rgba(35,40,44,0.10) 100%),
+      radial-gradient(120% 90% at 72% 0%, #f3f5f4 0%, #d9ccc2 60%, #c4b4a7 100%);
+  }
+  .ww-mullions {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 1;
+  }
+  .ww-mullions line {
+    stroke: #aab4b0;
+    stroke-width: 0.5;
+    vector-effect: non-scaling-stroke;
+  }
+  .ww-depot .ww-mullions line { stroke: #8c8178; }
+  .ww-mullions .ww-floorline { stroke: #c4cdc9; stroke-width: 1; }
+  .ww-floor {
+    position: absolute;
+    inset: 78% 0 0 0;
+    background: linear-gradient(180deg, #d4dbd8 0%, #e7ebe9 60%, #eef1f0 100%);
+    z-index: 2;
+  }
+  .ww-depot .ww-floor {
+    background: linear-gradient(180deg, #cfd5d2 0%, #dfe3e1 100%);
+  }
+  /* Raking light sweep across the floor */
+  .ww-sweep {
+    position: absolute;
+    inset: 0;
+    z-index: 3;
+    background: linear-gradient(105deg, rgba(255,255,255,0) 38%, rgba(255,255,255,0.55) 52%, rgba(255,255,255,0) 66%);
+    mix-blend-mode: screen;
+    pointer-events: none;
+  }
+  .ww-detail .ww-floor { display: none; }
+  .ww-detail .ww-glow { inset: 0; }
+  .ww-detail .ww-mullions line { stroke-width: 0.8; }
+</style>

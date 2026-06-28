@@ -1,0 +1,25 @@
+---
+import { SITE, NAV } from "../lib/site";
+const path = Astro.url.pathname;
+const isActive = (href: string) => path === href || path === href + "/";
+---
+<nav class="glass fixed top-0 inset-x-0 z-50 border-b border-border">
+  <div class="mx-auto max-w-[1440px] px-5 md:px-16 h-20 flex items-center justify-between gap-6">
+    <a href="/" class="font-display font-bold tracking-tight text-lg md:text-xl uppercase" aria-label={`${SITE.name} — home`}>
+      Glasswing
+    </a>
+
+    <div class="hidden md:flex items-center gap-8">
+      {NAV.map((item) => (
+        <a
+          href={item.href}
+          class:list={["kicker text-muted hover:text-ink transition-colors", isActive(item.href) && "text-ink"]}
+          aria-current={isActive(item.href) ? "page" : undefined}
+        >{item.label}</a>
+      ))}
+      <a href="/book" class="btn-primary">Check a date</a>
+    </div>
+
+    <a href="/book" class="btn-primary md:hidden !px-5 !py-2.5 text-[0.7rem]">Check a date</a>
+  </div>
+</nav>

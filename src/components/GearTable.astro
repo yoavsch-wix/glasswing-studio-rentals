@@ -1,0 +1,37 @@
+---
+import type { GearItem } from "../lib/cms";
+interface Props { gear: GearItem[]; }
+const { gear } = Astro.props;
+
+// Group by category, preserving the seeded order.
+const categories: string[] = [];
+const byCategory: Record<string, GearItem[]> = {};
+for (const item of gear) {
+  const cat = item.category || "Other";
+  if (!byCategory[cat]) { byCategory[cat] = []; categories.push(cat); }
+  byCategory[cat].push(item);
+}
+const pad = (n: number) => String(n).padStart(2, "0");
+---
+<div class="border-t border-border">
+  {categories.map((cat, ci) => (
+    <div class="grid grid-cols-1 md:grid-cols-12 gap-x-12 gap-y-4 py-8 border-b border-border reveal">
+      <div class="md:col-span-3">
+        <span class="kicker text-muted">{pad(ci + 1)} / {cat}</span>
+      </div>
+      <div class="md:col-span-9 grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-5">
+        {byCategory[cat].map((item) => (
+          <div class="flex items-baseline justify-between gap-4 border-b border-border/60 pb-3">
+            <div>
+              <span class="block">{item.name}</span>
+              <span class="block text-sm text-muted mt-1">{item.specNote}</span>
+            </div>
+            <span class:list={["kicker shrink-0 px-2 py-1", item.included ? "text-primary bg-primary/10" : "text-muted"]}>
+              {item.included ? "Included" : item.hourlyAddOn}
+            </span>
+          </div>
+        ))}
+      </div>
+    </div>
+  ))}
+</div>

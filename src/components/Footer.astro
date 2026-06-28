@@ -1,0 +1,41 @@
+---
+import { SITE, NAV } from "../lib/site";
+---
+<footer class="border-t border-border bg-background">
+  <div class="mx-auto max-w-[1440px] px-5 md:px-16 py-16 grid grid-cols-1 md:grid-cols-12 gap-10">
+    <div class="md:col-span-5">
+      <a href="/" class="font-display font-bold tracking-tight text-xl uppercase block mb-4">Glasswing</a>
+      <p class="text-muted max-w-xs">
+        A 1920s Prague tram depot reimagined for image makers. North light preserved, gear in the room, the price on the page.
+      </p>
+    </div>
+
+    <nav class="md:col-span-3" aria-label="Footer">
+      <h2 class="kicker text-ink mb-5">Studios</h2>
+      <ul class="space-y-3">
+        {NAV.map((item) => (
+          <li><a href={item.href} class="text-muted hover:text-primary transition-colors">{item.label}</a></li>
+        ))}
+      </ul>
+    </nav>
+
+    <div class="md:col-span-4">
+      <h2 class="kicker text-ink mb-5">Find us</h2>
+      <address class="not-italic text-muted space-y-2">
+        <p>{SITE.address}</p>
+        <p>{SITE.hours}</p>
+        <p><a href={`mailto:${SITE.email}`} class="hover:text-primary transition-colors">{SITE.email}</a></p>
+        <p>
+          <a href={SITE.socials.instagram} class="kicker text-ink hover:text-primary transition-colors underline underline-offset-4" rel="me">
+            Instagram
+          </a>
+        </p>
+      </address>
+    </div>
+
+    <div class="md:col-span-12 border-t border-border pt-8 flex flex-col md:flex-row justify-between items-start md:items-center gap-3">
+      <span class="kicker text-muted">© {SITE.est}–2026 {SITE.name}. North light preserved.</span>
+      <span class="kicker text-muted">{SITE.geo.lat}° N, {SITE.geo.lng}° E</span>
+    </div>
+  </div>
+</footer>

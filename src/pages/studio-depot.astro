@@ -1,0 +1,27 @@
+---
+import StudioPage from "../components/StudioPage.astro";
+import { getGear } from "../lib/cms";
+
+const all = await getGear();
+const gear = all.filter((g) => g.category !== "Studio" && (g.studio === "Studio Depot" || g.studio === "Both"));
+
+const specs = [
+  { k: "Total area", v: "78 m²" },
+  { k: "Drive-in door", v: "4.2 × 4.5 m" },
+  { k: "Floor load", v: "1500 kg/m²" },
+  { k: "Freight lift", v: "3000 kg" },
+];
+---
+<StudioPage
+  name="Studio Depot"
+  index="02"
+  location="Prague 7 · Loading dock access"
+  variant="depot"
+  lede="The room a car can drive into."
+  body="A raw 1920s skeletal structure built for heavy logistics. Drive-in access for oversized equipment and direct freight-lift connectivity, with dock-side north glass keeping the daylight consistent and shadowless. We poured a level floor over the old inspection pits and widened the dock door until a small car rolls straight onto the seamless."
+  specs={specs}
+  gear={gear}
+  showSunPath={false}
+  title="Studio Depot"
+  description="78 m² drive-in photo studio in a 1920s Prague tram depot. Loading dock fits a small car, 3000 kg freight lift, dock-side north light. Booked by the hour."
+/>

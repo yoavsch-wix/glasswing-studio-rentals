@@ -1,0 +1,48 @@
+---
+import StudioPage from "../components/StudioPage.astro";
+import { getGear } from "../lib/cms";
+import { SITE } from "../lib/site";
+
+const all = await getGear();
+const gear = all.filter((g) => g.category !== "Studio" && (g.studio === "Studio North" || g.studio === "Both"));
+
+const specs = [
+  { k: "Total area", v: "95 m²" },
+  { k: "Ceiling height", v: "4.2 m" },
+  { k: "Window wall", v: "6 m glass" },
+  { k: "Orientation", v: "0° North" },
+];
+
+const jsonld = [
+  {
+    "@context": "https://schema.org",
+    "@type": "Product",
+    name: "Studio North — daylight photo studio rental, Prague",
+    description: "95 m² north-facing daylight studio with a six-meter glass wall in a 1920s Prague tram depot. Grip kit included. Booked by the hour.",
+    brand: { "@type": "Brand", name: SITE.name },
+    category: "Photography studio rental",
+    offers: {
+      "@type": "AggregateOffer",
+      priceCurrency: "EUR",
+      lowPrice: "45",
+      highPrice: "480",
+      offerCount: 3,
+      availability: "https://schema.org/InStock",
+    },
+  },
+];
+---
+<StudioPage
+  name="Studio North"
+  index="01"
+  location="Prague 7 · Tram Depot District"
+  variant="north"
+  lede="Preserving north light for pure color fidelity."
+  body="The larger of the two rooms, built around the original six-meter wall of glass. The light is soft, directional, and consistent through the day — ideal for editorial portraits and still life where natural texture is everything. Most people who shoot here never open a strobe case."
+  specs={specs}
+  gear={gear}
+  showSunPath={true}
+  title="Studio North"
+  description="95 m² north-facing daylight studio with a six-meter glass wall in a converted 1920s Prague tram depot. Grip kit included, booked by the hour."
+  jsonld={jsonld}
+/>

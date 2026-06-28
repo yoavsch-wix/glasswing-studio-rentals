@@ -1,0 +1,43 @@
+---
+import { SITE } from "../lib/site";
+const { lat, lng } = SITE.geo;
+const d = 0.008;
+const bbox = `${lng - d}%2C${lat - d}%2C${lng + d}%2C${lat + d}`;
+const embed = `https://www.openstreetmap.org/export/embed.html?bbox=${bbox}&layer=mapnik&marker=${lat}%2C${lng}`;
+const link = `https://www.openstreetmap.org/?mlat=${lat}&mlon=${lng}#map=16/${lat}/${lng}`;
+---
+<div class="map-facade relative aspect-[16/10] md:aspect-[2/1] border border-border overflow-hidden bg-surface" data-embed={embed}>
+  <!-- Static facade: stylized street grid + mint pin -->
+  <svg class="absolute inset-0 w-full h-full" viewBox="0 0 100 50" preserveAspectRatio="none" aria-hidden="true">
+    <rect width="100" height="50" fill="#eef2f1" />
+    {[10,25,40,55,70,85].map((x) => <line x1={x} y1="0" x2={x - 6} y2="50" stroke="#d7dedb" stroke-width="0.6" />)}
+    {[12,24,36].map((y) => <line x1="0" y1={y} x2="100" y2={y + 3} stroke="#d7dedb" stroke-width="0.6" />)}
+    <line x1="0" y1="40" x2="100" y2="43" stroke="#c4cdc9" stroke-width="1.2" />
+  </svg>
+  <div class="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-full flex flex-col items-center" aria-hidden="true">
+    <span class="kicker bg-dark text-on-dark px-2 py-1 mb-1">Glasswing</span>
+    <span class="w-px h-6 bg-primary"></span>
+    <span class="w-2.5 h-2.5 rounded-full bg-primary -mt-1"></span>
+  </div>
+  <button type="button" class="map-load absolute inset-0 flex items-center justify-center bg-surface/40 hover:bg-surface/20 transition-colors" aria-label="Load interactive map">
+    <span class="btn-ghost bg-surface">Load interactive map</span>
+  </button>
+  <a href={link} class="absolute bottom-3 right-3 kicker text-muted hover:text-primary underline underline-offset-4" target="_blank" rel="noopener">Open in OpenStreetMap →</a>
+</div>
+
+<script>
+  document.querySelectorAll<HTMLElement>(".map-facade").forEach((el) => {
+    const btn = el.querySelector<HTMLButtonElement>(".map-load");
+    const embed = el.dataset.embed;
+    btn?.addEventListener("click", () => {
+      if (!embed) return;
+      const iframe = document.createElement("iframe");
+      iframe.src = embed;
+      iframe.title = "Map of Glasswing Studio Rentals, Prague 7";
+      iframe.loading = "lazy";
+      iframe.className = "absolute inset-0 w-full h-full border-0";
+      el.appendChild(iframe);
+      btn.remove();
+    });
+  });
+</script>

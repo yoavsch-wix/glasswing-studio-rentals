@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://glasswing-1e8579b9-yoavsch.wix-site-host.com/sitemap.xml

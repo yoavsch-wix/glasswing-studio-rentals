@@ -1,0 +1,71 @@
+---
+/* Sun-path diagram (bonus). Horizontal time axis with the mint light-line as a
+   moving indicator. Interactive hour scrubber, progressively enhanced: noon is
+   active by default, buttons switch the active hour. 44px tap targets. */
+import { SUN_PATH } from "../lib/site";
+interface Props { compact?: boolean }
+const { compact = false } = Astro.props;
+---
+<div class="sunpath" data-sunpath>
+  <div class="relative">
+    <!-- Light intensity bars behind the axis -->
+    <div class="flex items-end justify-between gap-6 h-28 md:h-36 mb-4">
+      {SUN_PATH.map((p, i) => (
+        <button
+          type="button"
+          class="sunpath-hour group flex-1 flex flex-col items-center justify-end h-full"
+          data-hour={i}
+          aria-pressed={i === 1 ? "true" : "false"}
+          aria-label={`${p.time} — ${p.label}`}
+        >
+          <span
+            class="sunpath-bar w-full bg-primary/15 group-data-[active=true]:bg-primary/30 transition-all"
+            style={`height:${Math.round(p.height * 100)}%`}
+          ></span>
+        </button>
+      ))}
+    </div>
+
+    <!-- The axis + moving mint light-line -->
+    <div class="relative h-px bg-border">
+      <div class="sunpath-marker absolute -top-28 md:-top-36 light-line h-28 md:h-36 transition-[left] duration-500 ease-out" style="left:50%"></div>
+      <div class="flex justify-between mt-4">
+        {SUN_PATH.map((p, i) => (
+          <span class="sunpath-tick kicker text-muted data-[active=true]:text-primary transition-colors" data-tick={i}>{p.time}</span>
+        ))}
+      </div>
+    </div>
+  </div>
+
+  {!compact && (
+    <p class="sunpath-label mt-8 text-lg text-ink max-w-md" data-label>
+      {SUN_PATH[1].label}.
+    </p>
+  )}
+</div>
+
+<script>
+  document.querySelectorAll<HTMLElement>("[data-sunpath]").forEach((root) => {
+    const hours = Array.from(root.querySelectorAll<HTMLButtonElement>(".sunpath-hour"));
+    const ticks = Array.from(root.querySelectorAll<HTMLElement>(".sunpath-tick"));
+    const marker = root.querySelector<HTMLElement>(".sunpath-marker");
+    const label = root.querySelector<HTMLElement>("[data-label]");
+    const labels = ["Raking morning light across the floor", "Direct, even north light — no gels, no fuss", "Soft and low, holding past four"];
+    const positions = ["12%", "50%", "88%"];
+    function set(i: number) {
+      hours.forEach((h, j) => {
+        const on = j === i;
+        h.querySelector(".sunpath-bar")?.setAttribute("data-active", String(on));
+        h.setAttribute("aria-pressed", String(on));
+      });
+      ticks.forEach((t, j) => t.setAttribute("data-active", String(j === i)));
+      if (marker) marker.style.left = positions[i];
+      if (label) label.textContent = labels[i] + ".";
+    }
+    hours.forEach((h, i) => {
+      h.addEventListener("click", () => set(i));
+      h.addEventListener("mouseenter", () => set(i));
+    });
+    set(1);
+  });
+</script>

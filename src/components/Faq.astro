@@ -1,0 +1,14 @@
+---
+import { FAQ } from "../lib/site";
+---
+<div class="border-t border-border">
+  {FAQ.map((item) => (
+    <details class="group border-b border-border py-5">
+      <summary class="flex items-center justify-between gap-6 cursor-pointer list-none min-h-[44px]">
+        <h3 class="font-display font-bold uppercase text-base md:text-lg tracking-tight">{item.q}</h3>
+        <span class="kicker text-primary shrink-0 transition-transform group-open:rotate-45" aria-hidden="true">+</span>
+      </summary>
+      <p class="text-muted text-lg max-w-2xl mt-4">{item.a}</p>
+    </details>
+  ))}
+</div>

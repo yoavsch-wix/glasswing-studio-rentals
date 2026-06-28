@@ -1,0 +1,13 @@
+---
+// Pinned bottom conversion control on mobile. A plain anchor is tappable on
+// first paint with zero JS — no island needed.
+const path = Astro.url.pathname;
+const onBookPage = path === "/book" || path === "/book/";
+---
+{!onBookPage && (
+  <div class="md:hidden fixed bottom-0 inset-x-0 z-50 glass border-t border-border">
+    <a href="/book" class="btn-primary w-full !rounded-none py-4">
+      Check a date
+    </a>
+  </div>
+)}

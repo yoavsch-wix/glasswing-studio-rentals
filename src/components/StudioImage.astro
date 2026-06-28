@@ -1,10 +1,11 @@
 ---
 import WindowWall from "./WindowWall.astro";
 
-/* Renders a photo from src/assets/studio/<name>.<ext> as a plain <img> pointing
-   at the Vite-emitted static asset (the Wix runtime does NOT serve Astro's
-   /_image optimization endpoint, so astro:assets <Image> would 404 in prod).
-   Source images are pre-optimized. Falls back to the WindowWall CSS motif when
+/* Renders a responsive photo from src/assets/studio/ as a plain <img> with a
+   manually-built srcset (the Wix runtime does NOT serve Astro's /_image
+   endpoint, so astro:assets <Image> 404s in prod and there's no runtime
+   resizing). Widths are pre-generated: <name>.jpg = 2400w base, plus
+   <name>-{480,768,1200,1600}.jpg. Falls back to the WindowWall CSS motif when
    no file is present (fallback="none" renders nothing). */
 type Variant = "north" | "depot" | "detail";
 interface Props {
@@ -24,6 +25,7 @@ const {
   variant = "north",
   fallback = "windowwall",
   class: className = "",
+  sizes = "100vw",
   priority = false,
   cols,
   rows,
@@ -34,19 +36,30 @@ const urls = import.meta.glob("../assets/studio/*.{jpg,jpeg,png,webp,avif}", {
   query: "?url",
   import: "default",
 });
-let url: string | undefined;
+
+const variants: { w: number; url: string }[] = [];
+let baseUrl: string | undefined;
 for (const [path, u] of Object.entries(urls)) {
-  const base = path.split("/").pop()?.replace(/\.[^.]+$/, "");
-  if (base === name) {
-    url = u as string;
-    break;
+  const file = path.split("/").pop()!.replace(/\.[^.]+$/, "");
+  if (file === name) {
+    baseUrl = u as string; // full-size base = 2400w
+  } else if (file.startsWith(name + "-")) {
+    const w = Number(file.slice(name.length + 1));
+    if (!Number.isNaN(w)) variants.push({ w, url: u as string });
   }
 }
+if (baseUrl) variants.push({ w: 2400, url: baseUrl });
+variants.sort((a, b) => a.w - b.w);
+
+const src = baseUrl ?? variants[variants.length - 1]?.url;
+const srcset = variants.map((v) => `${v.url} ${v.w}w`).join(", ");
 ---
 {
-  url ? (
+  src ? (
     <img
-      src={url}
+      src={src}
+      srcset={srcset}
+      sizes={sizes}
       alt={alt}
       class:list={["w-full h-full object-cover", className]}
       loading={priority ? "eager" : "lazy"}

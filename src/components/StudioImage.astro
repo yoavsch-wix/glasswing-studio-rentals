@@ -1,0 +1,59 @@
+---
+import WindowWall from "./WindowWall.astro";
+
+/* Renders a photo from src/assets/studio/<name>.<ext> as a plain <img> pointing
+   at the Vite-emitted static asset (the Wix runtime does NOT serve Astro's
+   /_image optimization endpoint, so astro:assets <Image> would 404 in prod).
+   Source images are pre-optimized. Falls back to the WindowWall CSS motif when
+   no file is present (fallback="none" renders nothing). */
+type Variant = "north" | "depot" | "detail";
+interface Props {
+  name: string;
+  alt: string;
+  variant?: Variant;
+  fallback?: "windowwall" | "none";
+  class?: string;
+  sizes?: string;
+  priority?: boolean;
+  cols?: number;
+  rows?: number;
+}
+const {
+  name,
+  alt,
+  variant = "north",
+  fallback = "windowwall",
+  class: className = "",
+  priority = false,
+  cols,
+  rows,
+} = Astro.props;
+
+const urls = import.meta.glob("../assets/studio/*.{jpg,jpeg,png,webp,avif}", {
+  eager: true,
+  query: "?url",
+  import: "default",
+});
+let url: string | undefined;
+for (const [path, u] of Object.entries(urls)) {
+  const base = path.split("/").pop()?.replace(/\.[^.]+$/, "");
+  if (base === name) {
+    url = u as string;
+    break;
+  }
+}
+---
+{
+  url ? (
+    <img
+      src={url}
+      alt={alt}
+      class:list={["w-full h-full object-cover", className]}
+      loading={priority ? "eager" : "lazy"}
+      fetchpriority={priority ? "high" : "auto"}
+      decoding="async"
+    />
+  ) : fallback === "windowwall" ? (
+    <WindowWall variant={variant} cols={cols} rows={rows} class={className} label={alt} />
+  ) : null
+}

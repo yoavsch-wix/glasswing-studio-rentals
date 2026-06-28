@@ -12,7 +12,7 @@ export const SITE = {
     instagram: "https://instagram.com/glasswing.depot",
     instagramHandle: "@glasswing.depot",
   },
-  url: "https://glasswing-1e8579b9-yoavsch.wix-site-host.com",
+  url: "https://www.glasswingstudio.com",
 } as const;
 
 export const NAV = [

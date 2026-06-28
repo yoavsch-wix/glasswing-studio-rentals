@@ -1,6 +1,6 @@
 ---
 import BaseLayout from "../layouts/BaseLayout.astro";
-import WindowWall from "../components/WindowWall.astro";
+import StudioImage from "../components/StudioImage.astro";
 import SunPath from "../components/SunPath.astro";
 import RateCards from "../components/RateCards.astro";
 import { getGear, getReferences } from "../lib/cms";
@@ -33,14 +33,15 @@ const jsonld = [
 <BaseLayout jsonld={jsonld}>
   <!-- 1. Hero -->
   <header class="relative min-h-[88vh] md:min-h-[92vh] flex items-end -mt-20 pt-20">
-    <WindowWall variant="north" cols={7} rows={6} class="absolute inset-0" label="Studio North's six-meter window wall in raking morning light across an empty concrete floor" />
-    <div class="absolute inset-x-0 bottom-0 h-2/3 bg-gradient-to-t from-background via-background/40 to-transparent"></div>
+    <StudioImage name="studio-north-hero" variant="north" priority cols={7} rows={6} sizes="100vw" class="absolute inset-0" alt="Studio North's six-meter window wall in raking morning light across an empty concrete floor" />
+    <div class="absolute inset-0 bg-gradient-to-r from-background via-background/60 to-transparent to-75%"></div>
+    <div class="absolute inset-x-0 bottom-0 h-1/2 bg-gradient-to-t from-background/75 to-transparent"></div>
     <div class="relative mx-auto max-w-[1440px] w-full px-5 md:px-16 pb-16 md:pb-24 grid grid-cols-1 md:grid-cols-12 gap-6">
       <div class="md:col-span-9 lg:col-span-8">
         <span class="kicker text-primary block mb-5">Daylight studios · Prague 7</span>
         <h1 class="font-display font-black uppercase tracking-tight leading-[0.92] text-[2.5rem] sm:text-6xl lg:text-[5rem]">
           Six-meter windows,<br />north-facing.<br />
-          <span class="text-muted">The light does most of the work.</span>
+          <span class="text-ink/85">The light does most of the work.</span>
         </h1>
         <div class="mt-8 flex flex-wrap gap-4">
           <a href="/book" class="btn-primary">Check a date</a>
@@ -62,12 +63,12 @@ const jsonld = [
     </div>
     <div class="grid grid-cols-1 md:grid-cols-2 gap-10">
       {[
-        { href: "/studio-north", n: "01", variant: "north", name: "Studio North", note: "95 m² of uninterrupted daylight. 4.2 m ceiling, a six-meter wall of glass, full grip kit by the door." },
-        { href: "/studio-depot", n: "02", variant: "depot", name: "Studio Depot", note: "78 m² drive-in dock. Freight lift, a floor rated for a small car, dock-side north glass." },
+        { href: "/studio-north", n: "01", variant: "north", img: "studio-north-card", name: "Studio North", note: "95 m² of uninterrupted daylight. 4.2 m ceiling, a six-meter wall of glass, full grip kit by the door." },
+        { href: "/studio-depot", n: "02", variant: "depot", img: "studio-depot-hero", name: "Studio Depot", note: "78 m² drive-in dock. Freight lift, a floor rated for a small car, dock-side north glass." },
       ].map((s) => (
         <a href={s.href} class="group block reveal">
           <div class="relative aspect-[4/3] border border-border overflow-hidden">
-            <WindowWall variant={s.variant as "north" | "depot"} class="absolute inset-0 transition-transform duration-700 group-hover:scale-[1.03]" label={`${s.name} interior`} />
+            <StudioImage name={s.img} variant={s.variant as "north" | "depot"} sizes="(min-width: 768px) 50vw, 100vw" class="absolute inset-0 transition-transform duration-700 group-hover:scale-[1.03]" alt={`${s.name} interior`} />
             <span class="absolute top-5 left-5 bg-surface border border-border kicker px-3 py-2">{s.name}</span>
           </div>
           <div class="flex justify-between items-end border-b border-border pt-5 pb-4">

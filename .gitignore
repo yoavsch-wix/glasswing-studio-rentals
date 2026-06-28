@@ -33,3 +33,6 @@ pnpm-debug.log*
 .gemini/
 .agents/
 skills-lock.json
+
+# internal notes — not published
+docs/image-prompts.md

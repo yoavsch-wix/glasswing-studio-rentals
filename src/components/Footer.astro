@@ -35,7 +35,15 @@ import { SITE, NAV } from "../lib/site";
 
     <div class="md:col-span-12 border-t border-border pt-8 flex flex-col md:flex-row justify-between items-start md:items-center gap-3">
       <span class="kicker text-muted">© {SITE.est}–2026 {SITE.name}. North light preserved.</span>
-      <span class="kicker text-muted">{SITE.geo.lat}° N, {SITE.geo.lng}° E</span>
+      <div class="flex items-center gap-6">
+        <a
+          href="https://www.wix-headless.dev/"
+          target="_blank"
+          rel="noopener"
+          class="kicker text-muted hover:text-primary transition-colors"
+        >Powered by Wix Headless</a>
+        <span class="kicker text-muted">{SITE.geo.lat}° N, {SITE.geo.lng}° E</span>
+      </div>
     </div>
   </div>
 </footer>
